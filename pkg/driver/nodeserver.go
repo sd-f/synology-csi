@@ -156,13 +156,12 @@ func (ns *nodeServer) NodePublishVolume(ctx context.Context, req *csi.NodePublis
 
 	glog.V(5).Infof("Target path: %s", targetPath)
 
-	/*
-		notMnt, err := isLikelyNotMountPointAttach(targetPath)
-		if err != nil {
-			return nil, status.Error(codes.Internal, err.Error())
-		}
-	*/
-	notMnt := true
+	notMnt, err := isLikelyNotMountPointAttach(targetPath)
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	// notMnt := true
 
 	if notMnt {
 		exists, err := mount.PathExists(devicePath)
@@ -228,13 +227,12 @@ func (ns *nodeServer) NodeUnpublishVolume(ctx context.Context, req *csi.NodeUnpu
 		return nil, status.Error(codes.NotFound, msg)
 	}
 
-	/*
-		notMnt, err := isLikelyNotMountPointDetach(targetPath)
-		if err != nil {
-			return nil, status.Error(codes.Internal, err.Error())
-		}
-	*/
-	notMnt := false
+	notMnt, err := isLikelyNotMountPointDetach(targetPath)
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	// notMnt := false
 
 	if notMnt {
 		msg := fmt.Sprintf("Path %s not mounted", targetPath)
